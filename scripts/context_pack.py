@@ -6,6 +6,8 @@
 사용: python3 context_pack.py --project . --chapter 12 [--scene 3] [--with 이름 --with 이름]
 결과: packs/ch12.md (또는 packs/ch12-s3.md)
 """
+from __future__ import annotations
+
 import argparse
 import re
 import sys

@@ -8,6 +8,8 @@
   python3 snapshot.py --project . diff ch12 [--from 원고|1] [--to 현재|3] [--write]
   python3 snapshot.py --project . restore ch12 <번호|단계>  # 현재 원고도 먼저 스냅샷으로 남긴 뒤 되돌림
 """
+from __future__ import annotations
+
 import argparse
 import datetime as dt
 import difflib

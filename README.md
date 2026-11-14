@@ -117,7 +117,7 @@ claude --plugin-dir ./novel-wiki
 /plugin install novel-wiki@novel-wiki
 ```
 
-Python 3.10 이상이 필요합니다. 외부 패키지는 쓰지 않습니다.
+Python 3.9 이상이 필요합니다 (macOS 기본 python3로 동작). 외부 패키지는 쓰지 않습니다.
 
 ## 라이선스
 MIT. howells/fiction(MIT), rhavekost/author-toolkit(MIT), conorbronsdon/avoid-ai-writing(MIT)의 구조와 아이디어를 참고했습니다 → [ATTRIBUTION.md](ATTRIBUTION.md)
