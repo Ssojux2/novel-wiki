@@ -20,7 +20,7 @@ from bible_lib import (  # noqa: E402
     manuscript_chapters, read_tsv_table, state_rows,
 )
 
-LEDGERS = {"timeline", "threads", "terms", "_overview", "_index", "_log", "overview", "index", "log"}
+LEDGERS = {"timeline", "threads", "terms", "serial", "_overview", "_index", "_log", "overview", "index", "log"}
 TIME_RE = re.compile(r"D\s*([+-]?\d+)(?:\s+(\d{1,2}):(\d{2}))?")
 
 
