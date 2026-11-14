@@ -12,7 +12,7 @@ LLM Wiki 패턴을 바탕으로 만든 **한국어 장편 SF 집필 플러그인
 | 출처 | 가져온 것 | 버린 것 |
 |---|---|---|
 | **LLM Wiki v2** (Karpathy 패턴) | raw → wiki → schema 3레이어, Ingest·Query·Lint, `_index`/`_log`, 모순 표기 | 범용 entities/concepts 분류 → 소설용 분류로 교체 |
-| **howells/fiction** | 집필 루프(쓰기 → 리뷰 → 수정), 역할별 에이전트, `go`(세션 재개), 장 단위 병렬 처리, 작법 원칙, 연속성 항목 | EPUB·표지·제목 생성, 실존 비평가 페르소나, 영문 스타일 가이드 |
+| **howells/fiction** | 집필 루프(쓰기 → 리뷰 → 수정), 역할별 에이전트, `go`(세션 재개), 장 단위 병렬 처리, 작법 원칙, 연속성 항목, 원고 합본(build) 개념 | EPUB 출력(→ docx로 교체), 표지·제목 생성, 실존 비평가 페르소나, 영문 스타일 가이드 |
 | **author-toolkit** | 스토리 바이블을 세션 간 상태로 쓰는 방식, 세션 노트, 브레인스톰 → 선별 → 초고 사이클, 하드 SF 원칙, 지식 상태 추적, 감사 Finding 스키마, AI 티 탐지/수정 2모드 | 논픽션 스킬, 아키타입 분류, 영문 단어 목록 |
 
 ### 새로 만든 것
@@ -21,6 +21,7 @@ LLM Wiki 패턴을 바탕으로 만든 **한국어 장편 SF 집필 플러그인
 - **대장(ledger)**: `timeline.md`(이야기 내 시각), `threads.md`(복선 심기·회수), `terms.md`(고유명사 정본 표기)
 - **기계 린트**: 깨진 링크, 고아 페이지, 미반영 장, 사망 인물 재등장, 시간 역행, 기한 지난 복선, 금지 표기
 - **한국어 AI 티 사전**: 번역투, LLM 클리셰("형언할 수 없는", "정적이 흘렀다", "그것은 시작에 불과했다"), 필터어, 주어 대명사 남발, 문장 길이 단조로움, 부사형 대사 태그
+- **docx 합본**: `build_docx.py`가 표준 라이브러리만으로 Word 파일을 만듭니다 (Word·pandoc 불필요). 공모전·읽기·검토 프리셋, 원고지 매수 추정, 빌드 전 점검(연속성 경고, AI 티 점수, TODO 표시)을 제공합니다.
 - **SessionStart 훅**: 소설 프로젝트 폴더에서 세션을 열면 현황(미반영 장, 열린 복선, 지난 세션 노트)이 자동으로 들어옵니다.
 
 ### 판단은 LLM, 셈은 스크립트
@@ -44,6 +45,7 @@ my-novel/
 │   └── _templates/
 ├── packs/                    맥락 팩 (자동 생성)
 ├── reviews/                  리뷰·린트·deslop 리포트
+├── builds/YYYY-MM-DD/        합본 docx (결과물)
 └── sessions/                 세션 노트
 ```
 
@@ -63,13 +65,23 @@ my-novel/
 | `/novel-wiki:lint` | 연속성 검사 |
 | `/novel-wiki:deslop N` | AI 티 감사/수정 |
 | `/novel-wiki:critique` | 전체 비평 |
+| `/novel-wiki:build` | 원고 → docx 합본 |
 
 ## 집필 루프
 
 ```
 go → pack N → write N → (작가 수정) → ingest N → review N → 고쳐쓰기 → deslop N
                                          └ 5장마다 lint
+완성 → critique → 개고 → build
 ```
+
+**최종본은 `manuscript/`입니다.** 바이블·아웃라인·리포트는 작업 도구이고 책에 들어가지 않습니다. `/novel-wiki:build`가 원고를 장 순서대로 묶어 `builds/날짜/제목-프리셋.docx`를 만듭니다. 고칠 게 있으면 docx가 아니라 원고를 고치고 다시 빌드합니다.
+
+| 프리셋 | 용도 | 판형 · 글자 · 줄간격 |
+|---|---|---|
+| `contest` | 공모전·투고 | A4 · 11pt · 160%, 표지에 원고지 매수 |
+| `reading` | 읽기용 | 신국판 · 10.5pt · 170% |
+| `review` | 검토·인쇄 | A4 넓은 여백 · 11pt · 200%, 머리글에 빌드 날짜 |
 
 ## 에이전트
 
@@ -84,6 +96,7 @@ python3 scripts/state_at.py --project . --at 10 --all
 python3 scripts/context_pack.py --project . --chapter 12 --scene 2
 python3 scripts/lint_bible.py --project .
 python3 scripts/deslop_ko.py manuscript/ch03.md --write
+python3 scripts/build_docx.py --project . --preset contest --author "필명" --strict
 ```
 
 ## 설치

@@ -18,6 +18,7 @@ LLM Wiki 패턴을 쓴다: **원고(canon)는 작가가 쓰고, 바이블은 LLM
 | `bible/` | 스토리 바이블 (위키) | **LLM 전용**. 작가는 읽고 지시만 |
 | `packs/` | 장면별 맥락 팩 | 스크립트 + LLM |
 | `reviews/` | 리뷰·린트·AI티 리포트 | LLM |
+| `builds/` | 합본 docx (빌드 결과물, 직접 수정 금지) | 스크립트 |
 | `sessions/` | 세션 노트 | LLM |
 
 ## 절대 규칙
@@ -49,4 +50,11 @@ LLM Wiki 패턴을 쓴다: **원고(canon)는 작가가 쓰고, 바이블은 LLM
 /novel-wiki:review 12 장 리뷰
 /novel-wiki:lint      연속성 검사 (5장마다)
 /novel-wiki:deslop 12 AI 티 제거
+/novel-wiki:build     manuscript/ → builds/날짜/제목.docx (최종본 합본)
 ```
+
+최종본은 `manuscript/`다. docx는 빌드 결과물이므로 고칠 게 있으면 원고를 고치고 다시 빌드한다.
+
+## 빌드 설정
+- 프리셋: contest  ← 공모전 요강에 맞춰 글꼴·크기·여백을 정하면 여기에 적는다
+- 필명: {{AUTHOR}}

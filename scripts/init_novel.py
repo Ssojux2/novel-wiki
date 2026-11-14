@@ -13,7 +13,7 @@ PLUGIN = Path(__file__).resolve().parent.parent
 TPL = PLUGIN / "templates"
 
 DIRS = [
-    "manuscript", "notes", "outline", "packs", "reviews", "sessions",
+    "manuscript", "notes", "outline", "packs", "reviews", "sessions", "builds",
     "bible/characters", "bible/places", "bible/factions", "bible/tech",
     "bible/rules", "bible/arcs", "bible/chapters", "bible/_templates",
 ]
@@ -39,12 +39,13 @@ def main() -> None:
     ap.add_argument("--tense", default="과거형")
     ap.add_argument("--length", default="(미정)")
     ap.add_argument("--style", default="(없음)")
+    ap.add_argument("--author", default="(미정)")
     a = ap.parse_args()
 
     root = Path(a.path).expanduser().resolve()
     ctx = {
         "TITLE": a.title, "GENRE": a.genre, "POV": a.pov, "TENSE": a.tense,
-        "LENGTH": a.length, "STYLE_NOTES": a.style, "DATE": dt.date.today().isoformat(),
+        "LENGTH": a.length, "STYLE_NOTES": a.style, "AUTHOR": a.author, "DATE": dt.date.today().isoformat(),
     }
     created, skipped = [], []
     for d in DIRS:
@@ -65,7 +66,7 @@ def main() -> None:
 
     gi = root / ".gitignore"
     if not gi.exists():
-        gi.write_text("packs/\n.DS_Store\n", encoding="utf-8")
+        gi.write_text("packs/\nbuilds/\n.DS_Store\n", encoding="utf-8")
 
     print(f"프로젝트: {root}")
     print(f"생성 {len(created)}개, 기존 유지 {len(skipped)}개")

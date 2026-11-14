@@ -27,12 +27,15 @@ LLM Wiki 패턴을 소설에 적용한다: **작가가 원고(canon)를 쓰고, 
 | `/novel-wiki:lint` | Lint | 연속성 검사 (기계 + 판단) |
 | `/novel-wiki:deslop N` | 퇴고 | 한국어 AI 티·문장 감사/수정 |
 | `/novel-wiki:critique` | 완성 | 원고 전체 비평 |
+| `/novel-wiki:build` | 출판 | manuscript/를 한 권의 .docx로 합본 (공모전·읽기·검토 프리셋) |
 
 ## 집필 루프
 ```
 go → pack N → write N → (작가 수정) → ingest N → review N → 고쳐쓰기 → deslop N
                                          └ 5장마다 lint
+완성 → critique → 개고 → build (docx)
 ```
+- **최종본 = `manuscript/`**. 바이블·아웃라인·리포트는 작업 도구일 뿐 책에 들어가지 않는다. `build`는 원고를 묶어 docx를 만들 뿐이니, 수정은 항상 원고에서 하고 다시 빌드한다.
 - **ingest를 건너뛰지 않는다.** 다음 장의 맥락 팩이 이전 장의 상태 변화에 의존한다.
 - 쓰기와 ingest는 장 순서대로 한다. 리뷰·deslop·린트 판단은 장 단위로 병렬 처리할 수 있다.
 
@@ -53,6 +56,7 @@ go → pack N → write N → (작가 수정) → ingest N → review N → 고�
 - "서윤이 이 시점에 뭘 알아?" → `state_at.py --at chNN --entity 서윤`으로 답한다 (바이블을 통째로 읽지 않는다)
 - "설정 꼬인 데 있어?" → lint
 - "AI 같아" / "문장 다듬어줘" → deslop
+- "최종본 뽑아줘" / "공모전 제출용 파일" / "워드로" → build
 - 바이블에 대한 질문 → `bible/_index.md`부터 읽고 필요한 페이지만 연다. 가치 있는 답은 `bible/arcs/`나 해당 페이지에 저장할지 제안한다 (위키의 Query → 축적)
 
 ## 레퍼런스

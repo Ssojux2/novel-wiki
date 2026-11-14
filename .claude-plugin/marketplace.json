@@ -9,7 +9,7 @@
       "name": "novel-wiki",
       "source": "./",
       "description": "LLM Wiki 기반 한국어 장편(SF) 집필: 스토리 바이블 컴파일, 시점별 상태, 맥락 팩, 연속성 린트, 한국어 AI 티 제거",
-      "version": "0.1.0"
+      "version": "0.2.0"
     }
   ],
   "description": "Ssojux2의 한국어 장편 집필 플러그인 마켓플레이스"
