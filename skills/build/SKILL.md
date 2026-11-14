@@ -24,6 +24,8 @@ Python 표준 라이브러리만 쓴다. Word, pandoc, python-docx가 없어도 
 | `reading` | 읽기용 (단행본 느낌) | 신국판 152×225mm | 10.5pt | 170% |
 | `review` | 검토·인쇄·첨삭 | A4, 넓은 여백 | 11pt | 200%, 머리글에 빌드 날짜 |
 
+연재 회차 공개본: `--from N --to N --preset reading --no-title-page --txt` → 플랫폼에 붙여 넣을 `.txt`도 함께 생긴다.
+
 세부 조정: `--font "함초롬바탕"`, `--size 10`, `--spacing 180`, `--chapter-label "제{n}장"`, `--no-title-page`, `--title`, `--out 경로.docx`
 
 ## 빌드 전 점검 (기본으로 켜짐)

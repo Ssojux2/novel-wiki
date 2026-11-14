@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .DS_Store
 builds/
+examples/demo/reviews/snapshots/
+examples/demo/reviews/*.md
+examples/demo/packs/*.md

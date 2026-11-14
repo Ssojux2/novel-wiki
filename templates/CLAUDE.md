@@ -17,7 +17,7 @@ LLM Wiki 패턴을 쓴다: **원고(canon)는 작가가 쓰고, 바이블은 LLM
 | `outline/` | 구조 설계(`architecture.md`), 장 비트(`chNN.md`) | 작가 + LLM 공동 |
 | `bible/` | 스토리 바이블 (위키) | **LLM 전용**. 작가는 읽고 지시만 |
 | `packs/` | 장면별 맥락 팩 | 스크립트 + LLM |
-| `reviews/` | 리뷰·린트·AI티 리포트 | LLM |
+| `reviews/` | 리뷰·린트·AI티 리포트, `snapshots/chNN/` 단계별 원고 스냅샷 | LLM·스크립트 |
 | `builds/` | 합본 docx (빌드 결과물, 직접 수정 금지) | 스크립트 |
 | `sessions/` | 세션 노트 | LLM |
 
@@ -40,6 +40,13 @@ LLM Wiki 패턴을 쓴다: **원고(canon)는 작가가 쓰고, 바이블은 LLM
 - 장면 구분은 `* * *`. "장면 1" 같은 표지는 쓰지 않는다.
 - 작가 고유 규칙: {{STYLE_NOTES}}
 
+## 연재 설정
+<!-- 주간 연재용. /novel-wiki:weekly 가 읽는다. -->
+- 연재 요일: (미정)
+- 회당 목표 분량: 5000        ← 공백 제외 글자 수
+- 참조할 이전 회차 수: 3
+- 플랫폼: (미정)
+
 ## 호흡 프로필
 <!-- /novel-wiki:breath setup 으로 정한다. writer·stylist·reviewer·deslop이 읽는다. -->
 - 목표 평균 문장 길이: 45        ← 서술문 기준, 공백 포함 글자 수
@@ -51,6 +58,7 @@ LLM Wiki 패턴을 쓴다: **원고(canon)는 작가가 쓰고, 바이블은 LLM
 ## 집필 루프
 
 ```
+/novel-wiki:weekly 12 주간 연재: 이전 회차 참조 검토 → 다듬기(스냅샷) → 확정·바이블 반영 → 공개본
 /novel-wiki:go        세션 시작 (상태 요약 + 다음 할 일)
 /novel-wiki:pack 12   12장 맥락 팩 생성
 /novel-wiki:write 12  팩 기반 집필 (브레인스톰 → 선별 → 초고)

@@ -17,6 +17,7 @@ LLM Wiki 패턴을 소설에 적용한다: **작가가 원고(canon)를 쓰고, 
 |---|---|---|
 | `/novel-wiki:init` | 시작 | 프로젝트 폴더·바이블·CLAUDE.md 생성 |
 | `/novel-wiki:go` | 세션 시작 | 현황 로드 + 다음 할 일 하나 추천 |
+| `/novel-wiki:weekly N` | 연재 | 한 회차 전체 루틴: 이전 회차 참조 검토 → 같은 파일 다듬기(스냅샷) → 확정·ingest → 공개본 docx·txt |
 | `/novel-wiki:plan` | 설계 | 전제·주제·결말·One Big Lie (소크라테스식 문답) |
 | `/novel-wiki:world` | 설계 | SF 세계관 → rules/tech/factions/places |
 | `/novel-wiki:outline` | 설계 | 장별 비트 + 복선 배치 |
@@ -29,6 +30,14 @@ LLM Wiki 패턴을 소설에 적용한다: **작가가 원고(canon)를 쓰고, 
 | `/novel-wiki:deslop N` | 퇴고 | 한국어 AI 티·문장 감사/수정 |
 | `/novel-wiki:critique` | 완성 | 원고 전체 비평 |
 | `/novel-wiki:build` | 출판 | manuscript/를 한 권의 .docx로 합본 (공모전·읽기·검토 프리셋) |
+
+## 주간 연재 루프 (한 회차 = 한 파일)
+```
+작가가 manuscript/chNN.md 작성 → /novel-wiki:weekly N
+  스냅샷(원고) → 이전 회차 기반 검토 → review 적용 → breath → deslop (단계마다 스냅샷)
+  → 변경 내역 확인 → 확정 → ingest → 공개본 → 연재 기록
+```
+같은 파일을 고치지만 `reviews/snapshots/chNN/`에 단계별 사본이 쌓이므로 언제든 비교(`diff`)하고 되돌릴(`restore`) 수 있다.
 
 ## 집필 루프
 ```
@@ -59,6 +68,8 @@ go → pack N → write N → (작가 수정) → ingest N → review N → 고�
 - "설정 꼬인 데 있어?" → lint
 - "문장이 짧다" / "호흡을 길게" / "묘사를 풍부하게" / "문체 바꿔줘" → breath (프로필이 기본값이면 먼저 setup)
 - "AI 같아" / "문장 다듬어줘" → deslop
+- "이번 주 회차 검토" / "N화 올릴 준비" → weekly
+- "원래대로 돌려줘" / "뭐가 바뀌었어?" → `snapshot.py restore` / `snapshot.py diff`
 - "최종본 뽑아줘" / "공모전 제출용 파일" / "워드로" → build
 - 바이블에 대한 질문 → `bible/_index.md`부터 읽고 필요한 페이지만 연다. 가치 있는 답은 `bible/arcs/`나 해당 페이지에 저장할지 제안한다 (위키의 Query → 축적)
 

@@ -22,6 +22,7 @@ LLM Wiki 패턴을 바탕으로 만든 **한국어 장편 SF 집필 플러그인
 - **기계 린트**: 깨진 링크, 고아 페이지, 미반영 장, 사망 인물 재등장, 시간 역행, 기한 지난 복선, 금지 표기
 - **한국어 AI 티 사전**: 번역투, LLM 클리셰("형언할 수 없는", "정적이 흘렀다", "그것은 시작에 불과했다"), 필터어, 주어 대명사 남발, 문장 길이 단조로움, 부사형 대사 태그
 - **문장 호흡과 묘사 문체**: 노벨문학상·휴고상 수상작에서 비평가들이 짚어 온 기법을 일곱 모드로 정리했습니다. 장문누적(크러스너호르커이), 반복리듬(포세), 감각정밀(한강), 기억굴절(이시구로), 민족지(르 귄), 이인칭(제미신), 고밀도(깁슨)입니다. 같은 장면을 일곱 모드로 바꿔 쓴 예문을 보고 고를 수 있습니다. `breath_ko.py`가 서술문 평균 길이, 장문 비율, 짧은 문장 연속 구간을 재서 `CLAUDE.md`의 호흡 프로필과 비교하고, stylist 에이전트가 사실은 그대로 두고 문장만 다시 씁니다. 원작 문장은 옮기지 않고 기법만 씁니다.
+- **주간 연재 루틴**: `/novel-wiki:weekly N` 하나로 한 회차를 처리합니다. 한 회차는 한 파일입니다. `serial_review_pack.py`가 이전 회차들을 근거로 검토 팩을 만듭니다: 회차별 분량·호흡·대사 비율·AI 티 추세, 지난 화 마지막 ↔ 이번 화 시작, 직전 화 전문, 독자 기억 거리(오래 안 나온 인물), 이전 회차와 겹치는 표현, 열린 복선. 리뷰어는 연재 축(훅 연결, 재진입, 회차 완결성, 기억 거리, 반복, 문체 일관성)으로 검토합니다. 같은 파일을 고치되 `snapshot.py`가 단계마다 사본을 남겨 변경 내역 비교와 되돌리기가 가능합니다. 확정하면 바이블 반영, 회차 공개본(docx + 붙여넣기용 txt), 연재 기록까지 이어집니다.
 - **docx 합본**: `build_docx.py`가 표준 라이브러리만으로 Word 파일을 만듭니다 (Word·pandoc 불필요). 공모전·읽기·검토 프리셋, 원고지 매수 추정, 빌드 전 점검(연속성 경고, AI 티 점수, TODO 표시)을 제공합니다.
 - **SessionStart 훅**: 소설 프로젝트 폴더에서 세션을 열면 현황(미반영 장, 열린 복선, 지난 세션 노트)이 자동으로 들어옵니다.
 
@@ -42,7 +43,7 @@ my-novel/
 │   ├── _overview.md _index.md _log.md
 │   ├── characters/ places/ factions/ tech/   ← 상태 변화 표
 │   ├── rules/ arcs/ chapters/
-│   ├── timeline.md threads.md terms.md
+│   ├── timeline.md threads.md terms.md serial.md
 │   └── _templates/
 ├── packs/                    맥락 팩 (자동 생성)
 ├── reviews/                  리뷰·린트·deslop 리포트
@@ -56,6 +57,7 @@ my-novel/
 |---|---|
 | `/novel-wiki:init` | 프로젝트 생성 |
 | `/novel-wiki:go` | 세션 시작, 다음 할 일 추천 |
+| `/novel-wiki:weekly N` | 주간 연재 한 회차 전체 루틴 |
 | `/novel-wiki:plan` | 전제·주제·결말·One Big Lie 설계 |
 | `/novel-wiki:world` | SF 세계관 → rules/tech/factions/places |
 | `/novel-wiki:outline` | 장 비트 + 복선 배치 |
@@ -99,6 +101,8 @@ python3 scripts/context_pack.py --project . --chapter 12 --scene 2
 python3 scripts/lint_bible.py --project .
 python3 scripts/deslop_ko.py manuscript/ch03.md --write
 python3 scripts/breath_ko.py manuscript/ch03.md --write
+python3 scripts/serial_review_pack.py --project . --chapter 12
+python3 scripts/snapshot.py --project . save ch12 원고   # list / diff / restore
 python3 scripts/build_docx.py --project . --preset contest --author "필명" --strict
 ```
 

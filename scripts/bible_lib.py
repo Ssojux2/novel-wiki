@@ -311,3 +311,39 @@ def load_breath_profile(root: Path) -> dict:
                     a, _, b = pair.partition("=")
                     prof["scene_modes"][a.strip()] = b.strip()
     return prof
+
+
+# ---------------------------------------------------------------- 연재 설정
+SERIAL_DEFAULT = {"day": "", "target_chars": 0, "lookback": 3, "platform": ""}
+
+
+def load_serial_config(root: Path) -> dict:
+    """CLAUDE.md의 '## 연재 설정' 섹션."""
+    conf = dict(SERIAL_DEFAULT)
+    cm = root / "CLAUDE.md"
+    if not cm.exists():
+        return conf
+    m = re.search(r"^##\s*연재 설정\s*$(.*?)(?=^##\s|\Z)", cm.read_text(encoding="utf-8"), flags=re.M | re.S)
+    if not m:
+        return conf
+    for line in m.group(1).splitlines():
+        line = line.strip().lstrip("-").strip()
+        if ":" not in line:
+            continue
+        k, _, v = line.partition(":")
+        v = v.split("←")[0].strip()
+        num = re.search(r"[\d,]+", v)
+        if "요일" in k:
+            conf["day"] = v
+        elif "분량" in k and num:
+            conf["target_chars"] = int(num.group().replace(",", ""))
+        elif "참조" in k and num:
+            conf["lookback"] = int(num.group().replace(",", ""))
+        elif "플랫폼" in k:
+            conf["platform"] = v
+    return conf
+
+
+def body_text(path: Path) -> str:
+    _, body = split_frontmatter(path.read_text(encoding="utf-8"))
+    return re.sub(r"<!--.*?-->", "", body, flags=re.S).strip()

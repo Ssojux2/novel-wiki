@@ -56,7 +56,7 @@ def main() -> None:
         (TPL / "outline/architecture.md", root / "outline/architecture.md"),
         (TPL / "outline/chapter.md", root / "outline/_chapter-template.md"),
     ]
-    for name in ["_overview.md", "_index.md", "_log.md", "timeline.md", "threads.md", "terms.md"]:
+    for name in ["_overview.md", "_index.md", "_log.md", "timeline.md", "threads.md", "terms.md", "serial.md"]:
         pairs.append((TPL / "bible" / name, root / "bible" / name))
     for p in sorted((TPL / "bible/_templates").glob("*.md")):
         pairs.append((p, root / "bible/_templates" / p.name))

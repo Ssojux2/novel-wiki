@@ -279,6 +279,7 @@ def main() -> None:
     ap.add_argument("--no-check", action="store_true")
     ap.add_argument("--strict", action="store_true", help="점검에서 문제가 나오면 빌드 중단")
     ap.add_argument("--out")
+    ap.add_argument("--txt", action="store_true", help="연재 플랫폼 붙여넣기용 .txt도 함께 만든다")
     a = ap.parse_args()
 
     root = Path(a.project).resolve()
@@ -306,6 +307,7 @@ def main() -> None:
 
     total_chars = 0
     parts = []
+    txt_parts: list[str] = []
     if not a.no_title_page:
         parts.append(p("Title", runs(title)))
         if author:
@@ -318,16 +320,21 @@ def main() -> None:
         for kind, val in blocks(body):
             if kind == "title":
                 parts.append(p("Heading1", runs(val), page_break_before=not (first and a.no_title_page)))
+                txt_parts.append(val)
                 has_title = True
             elif kind == "subtitle":
                 parts.append(p("Heading2", runs(val)))
+                txt_parts.append(val)
             elif kind == "break":
                 parts.append(p("SceneBreak", '<w:r><w:t xml:space="preserve">*   *   *</w:t></w:r>'))
+                txt_parts.append("* * *")
             else:
                 if not has_title:
                     parts.append(p("Heading1", runs(a.chapter_label.format(n=n)), page_break_before=not (first and a.no_title_page)))
+                    txt_parts.append(a.chapter_label.format(n=n))
                     has_title = True
                 parts.append(p("Body", runs(val)))
+                txt_parts.append(re.sub(r"\*\*([^*]+)\*\*|\*([^*]+)\*", lambda m: m.group(1) or m.group(2), val))
         first = False
 
     manuscript_pages = round(total_chars / 200)
@@ -343,6 +350,8 @@ def main() -> None:
     header = f"{title} — {a.preset} 빌드 {today}" if cfg["header_info"] else None
     write_docx(dst, "".join(parts), title, author, cfg, a.font, header)
 
+    if a.txt:
+        dst.with_suffix(".txt").write_text("\n\n".join(txt_parts) + "\n", encoding="utf-8")
     report = dst.with_suffix(".build.md")
     report.write_text("\n".join([
         f"# 빌드 기록 — {title} ({today})", "",
@@ -351,7 +360,7 @@ def main() -> None:
         f"- 분량: 약 {total_chars:,}자 · 원고지 약 {manuscript_pages:,}매 (공백 포함 글자 수 ÷ 200, 추정치)",
         "", "## 사전 점검", *([f"- {x}" for x in notes] or ["- 문제 없음" if not a.no_check else "- 생략"]),
     ]) + "\n", encoding="utf-8")
-    print(f"빌드 완료: {dst}")
+    print(f"빌드 완료: {dst}" + (f" (+ {dst.with_suffix('.txt').name})" if a.txt else ""))
     print(f"  {len(chapters)}장 · 약 {total_chars:,}자 · 원고지 약 {manuscript_pages:,}매 · 기록 {report.name}")
 
 

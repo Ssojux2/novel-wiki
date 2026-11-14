@@ -31,6 +31,10 @@ def main() -> None:
         if pending:
             print(f"- 미반영 장: {', '.join(pending)} → /novel-wiki:ingest")
         print(f"- 열린 복선: {len(open_t)}개")
+        from bible_lib import load_serial_config
+        conf = load_serial_config(root)
+        if conf["day"] and "미정" not in conf["day"]:
+            print(f"- 연재: 매주 {conf['day']} · 다음 회차 {ch_label(latest + 1)} · /novel-wiki:weekly {latest}  (최신 화 검토가 남았다면)")
         if recent:
             print("- 최근 작업: " + " / ".join(r.lstrip('# ') for r in recent))
         if last_session:
