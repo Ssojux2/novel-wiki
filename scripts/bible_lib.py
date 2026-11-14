@@ -273,3 +273,41 @@ def mentions(text: str, names: list[str]) -> bool:
         if len(n) >= 2 and n in text:
             return True
     return False
+
+
+# ---------------------------------------------------------------- 호흡 프로필
+BREATH_DEFAULT = {"mean": 45, "long_ratio": 25, "short_run": 2, "modes": [], "scene_modes": {}}
+
+
+def load_breath_profile(root: Path) -> dict:
+    """CLAUDE.md의 '## 호흡 프로필' 섹션을 읽는다. 없으면 기본값."""
+    prof = dict(BREATH_DEFAULT)
+    prof["scene_modes"] = {}
+    cm = root / "CLAUDE.md"
+    if not cm.exists():
+        return prof
+    text = cm.read_text(encoding="utf-8")
+    m = re.search(r"^##\s*호흡 프로필\s*$(.*?)(?=^##\s|\Z)", text, flags=re.M | re.S)
+    if not m:
+        return prof
+    for line in m.group(1).splitlines():
+        line = line.strip().lstrip("-").strip()
+        if ":" not in line:
+            continue
+        k, _, v = line.partition(":")
+        v = v.split("←")[0].strip()
+        num = re.search(r"\d+", v)
+        if "평균 문장 길이" in k and num:
+            prof["mean"] = int(num.group())
+        elif "장문" in k and "비율" in k and num:
+            prof["long_ratio"] = int(num.group())
+        elif "연속 허용" in k and num:
+            prof["short_run"] = int(num.group())
+        elif "기본 모드" in k:
+            prof["modes"] = [x.strip() for x in re.split(r"[,，]", v) if x.strip()]
+        elif "장면별 모드" in k:
+            for pair in re.split(r"[,，]", v):
+                if "=" in pair:
+                    a, _, b = pair.partition("=")
+                    prof["scene_modes"][a.strip()] = b.strip()
+    return prof

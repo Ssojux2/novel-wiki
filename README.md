@@ -21,6 +21,7 @@ LLM Wiki 패턴을 바탕으로 만든 **한국어 장편 SF 집필 플러그인
 - **대장(ledger)**: `timeline.md`(이야기 내 시각), `threads.md`(복선 심기·회수), `terms.md`(고유명사 정본 표기)
 - **기계 린트**: 깨진 링크, 고아 페이지, 미반영 장, 사망 인물 재등장, 시간 역행, 기한 지난 복선, 금지 표기
 - **한국어 AI 티 사전**: 번역투, LLM 클리셰("형언할 수 없는", "정적이 흘렀다", "그것은 시작에 불과했다"), 필터어, 주어 대명사 남발, 문장 길이 단조로움, 부사형 대사 태그
+- **문장 호흡과 묘사 문체**: 노벨문학상·휴고상 수상작에서 비평가들이 짚어 온 기법을 일곱 모드로 정리했습니다. 장문누적(크러스너호르커이), 반복리듬(포세), 감각정밀(한강), 기억굴절(이시구로), 민족지(르 귄), 이인칭(제미신), 고밀도(깁슨)입니다. 같은 장면을 일곱 모드로 바꿔 쓴 예문을 보고 고를 수 있습니다. `breath_ko.py`가 서술문 평균 길이, 장문 비율, 짧은 문장 연속 구간을 재서 `CLAUDE.md`의 호흡 프로필과 비교하고, stylist 에이전트가 사실은 그대로 두고 문장만 다시 씁니다. 원작 문장은 옮기지 않고 기법만 씁니다.
 - **docx 합본**: `build_docx.py`가 표준 라이브러리만으로 Word 파일을 만듭니다 (Word·pandoc 불필요). 공모전·읽기·검토 프리셋, 원고지 매수 추정, 빌드 전 점검(연속성 경고, AI 티 점수, TODO 표시)을 제공합니다.
 - **SessionStart 훅**: 소설 프로젝트 폴더에서 세션을 열면 현황(미반영 장, 열린 복선, 지난 세션 노트)이 자동으로 들어옵니다.
 
@@ -63,6 +64,7 @@ my-novel/
 | `/novel-wiki:ingest N` | 원고를 바이블에 컴파일 |
 | `/novel-wiki:review N` | 장 리뷰 |
 | `/novel-wiki:lint` | 연속성 검사 |
+| `/novel-wiki:breath N` | 호흡 측정·장문 묘사로 다시 쓰기 (`setup`으로 프로필) |
 | `/novel-wiki:deslop N` | AI 티 감사/수정 |
 | `/novel-wiki:critique` | 전체 비평 |
 | `/novel-wiki:build` | 원고 → docx 합본 |
@@ -70,7 +72,7 @@ my-novel/
 ## 집필 루프
 
 ```
-go → pack N → write N → (작가 수정) → ingest N → review N → 고쳐쓰기 → deslop N
+go → pack N → write N → (작가 수정) → ingest N → review N → 고쳐쓰기 → breath N → deslop N
                                          └ 5장마다 lint
 완성 → critique → 개고 → build
 ```
@@ -85,7 +87,7 @@ go → pack N → write N → (작가 수정) → ingest N → review N → 고�
 
 ## 에이전트
 
-writer(opus) · bible-keeper(sonnet) · continuity-checker(sonnet) · chapter-reviewer(sonnet) · deslop-editor(sonnet) · world-architect(opus) · sf-critic(opus)
+writer(opus) · stylist(opus) · bible-keeper(sonnet) · continuity-checker(sonnet) · chapter-reviewer(sonnet) · deslop-editor(sonnet) · world-architect(opus) · sf-critic(opus)
 
 ## 스크립트 단독 사용
 
@@ -96,6 +98,7 @@ python3 scripts/state_at.py --project . --at 10 --all
 python3 scripts/context_pack.py --project . --chapter 12 --scene 2
 python3 scripts/lint_bible.py --project .
 python3 scripts/deslop_ko.py manuscript/ch03.md --write
+python3 scripts/breath_ko.py manuscript/ch03.md --write
 python3 scripts/build_docx.py --project . --preset contest --author "필명" --strict
 ```
 

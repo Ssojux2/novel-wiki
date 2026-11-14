@@ -25,13 +25,14 @@ LLM Wiki 패턴을 소설에 적용한다: **작가가 원고(canon)를 쓰고, 
 | `/novel-wiki:ingest N` | Ingest | 원고를 바이블에 컴파일 |
 | `/novel-wiki:review N` | 퇴고 | 장 리뷰 (발전·라인·인물·연속성) |
 | `/novel-wiki:lint` | Lint | 연속성 검사 (기계 + 판단) |
+| `/novel-wiki:breath N` | 퇴고 | 문장 호흡 측정, 일곱 묘사 모드로 장문화 (`setup`으로 프로필 설정) |
 | `/novel-wiki:deslop N` | 퇴고 | 한국어 AI 티·문장 감사/수정 |
 | `/novel-wiki:critique` | 완성 | 원고 전체 비평 |
 | `/novel-wiki:build` | 출판 | manuscript/를 한 권의 .docx로 합본 (공모전·읽기·검토 프리셋) |
 
 ## 집필 루프
 ```
-go → pack N → write N → (작가 수정) → ingest N → review N → 고쳐쓰기 → deslop N
+go → pack N → write N → (작가 수정) → ingest N → review N → 고쳐쓰기 → breath N → deslop N
                                          └ 5장마다 lint
 완성 → critique → 개고 → build (docx)
 ```
@@ -46,6 +47,7 @@ go → pack N → write N → (작가 수정) → ingest N → review N → 고�
 | `novel-wiki:bible-keeper` | ingest | sonnet |
 | `novel-wiki:continuity-checker` | 판단 린트 | sonnet |
 | `novel-wiki:chapter-reviewer` | 장 리뷰 | sonnet |
+| `novel-wiki:stylist` | 호흡·묘사 문체 | opus |
 | `novel-wiki:deslop-editor` | AI 티 제거 | sonnet |
 | `novel-wiki:world-architect` | SF 세계관 | opus |
 | `novel-wiki:sf-critic` | 전체 비평 | opus |
@@ -55,12 +57,13 @@ go → pack N → write N → (작가 수정) → ingest N → review N → 고�
 - "이 장 반영해줘" / 장을 다 썼다는 말 → ingest
 - "서윤이 이 시점에 뭘 알아?" → `state_at.py --at chNN --entity 서윤`으로 답한다 (바이블을 통째로 읽지 않는다)
 - "설정 꼬인 데 있어?" → lint
+- "문장이 짧다" / "호흡을 길게" / "묘사를 풍부하게" / "문체 바꿔줘" → breath (프로필이 기본값이면 먼저 setup)
 - "AI 같아" / "문장 다듬어줘" → deslop
 - "최종본 뽑아줘" / "공모전 제출용 파일" / "워드로" → build
 - 바이블에 대한 질문 → `bible/_index.md`부터 읽고 필요한 페이지만 연다. 가치 있는 답은 `bible/arcs/`나 해당 페이지에 저장할지 제안한다 (위키의 Query → 축적)
 
 ## 레퍼런스
-`craft-core.md` 작법 · `bible-schema.md` 데이터 형식과 ingest 절차 · `sf-worldbuilding.md` SF 세계관 · `continuity-checklist.md` 연속성 · `review-rubric.md` 리뷰 · `korean-ai-isms.md` AI 티
+`craft-core.md` 작법 · `bible-schema.md` 데이터 형식과 ingest 절차 · `sf-worldbuilding.md` SF 세계관 · `continuity-checklist.md` 연속성 · `review-rubric.md` 리뷰 · `korean-ai-isms.md` AI 티 · `prose-breath.md` 호흡과 묘사 문체
 
 ## 세션 연속성
 - 시작: 플러그인의 SessionStart 훅이 현황을 넣어 준다. 자세한 상태는 `/novel-wiki:go`로 본다.

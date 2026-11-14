@@ -40,6 +40,14 @@ LLM Wiki 패턴을 쓴다: **원고(canon)는 작가가 쓰고, 바이블은 LLM
 - 장면 구분은 `* * *`. "장면 1" 같은 표지는 쓰지 않는다.
 - 작가 고유 규칙: {{STYLE_NOTES}}
 
+## 호흡 프로필
+<!-- /novel-wiki:breath setup 으로 정한다. writer·stylist·reviewer·deslop이 읽는다. -->
+- 목표 평균 문장 길이: 45        ← 서술문 기준, 공백 포함 글자 수
+- 장문(80자 이상) 비율 목표: 25
+- 짧은 문장(20자 이하) 연속 허용: 2
+- 기본 모드: 감각정밀, 장문누적
+- 장면별 모드: 묘사=장문누적, 액션=고밀도, 회상=기억굴절, 세계설명=민족지, 고립=반복리듬
+
 ## 집필 루프
 
 ```
@@ -49,6 +57,7 @@ LLM Wiki 패턴을 쓴다: **원고(canon)는 작가가 쓰고, 바이블은 LLM
 /novel-wiki:ingest 12 탈고한 장을 바이블에 컴파일
 /novel-wiki:review 12 장 리뷰
 /novel-wiki:lint      연속성 검사 (5장마다)
+/novel-wiki:breath 12 호흡 측정·장문 묘사로 다시 쓰기
 /novel-wiki:deslop 12 AI 티 제거
 /novel-wiki:build     manuscript/ → builds/날짜/제목.docx (최종본 합본)
 ```

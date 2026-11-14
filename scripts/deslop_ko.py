@@ -104,8 +104,18 @@ def audit_file(path: Path, root: Path, extra_tier1: list) -> tuple[list, dict]:
         offset += len(para)
     stats["tier2_paragraphs"] = t2
 
+    # 호흡 프로필: 장문 지향이면 접속·연결 표현 기준을 완화하고, 호흡이 짧으면 breath를 권한다
+    try:
+        from bible_lib import load_breath_profile
+        prof = load_breath_profile(root)
+    except Exception:
+        prof = {"mean": 45}
+    long_mode = prof.get("mean", 45) >= 50
+
     # Tier 3 밀도
     for pat, limit, why in K.TIER3_DENSITY:
+        if long_mode and pat in ("그리고", r"(?:을|를) 통해"):
+            limit *= 1.5
         c = len(re.findall(pat, text))
         d = c * per_k
         if d > limit:
@@ -147,6 +157,9 @@ def audit_file(path: Path, root: Path, extra_tier1: list) -> tuple[list, dict]:
                     out.append(F("sentence-variance", "note", rel, 1, narr[i][:60], "비슷한 길이의 문장 5개 연속"))
             else:
                 run = 1
+        if mean < prof.get("mean", 45) * 0.85:
+            out.append(F("short-breath", "suggestion", rel, 1, f"서술문 평균 {mean:.0f}자 (목표 {prof.get('mean', 45)}자)",
+                         "호흡이 프로필 목표보다 짧음 → /novel-wiki:breath 로 장문화"))
         pro = sum(1 for s in narr if re.match(K.PRONOUN_START, s))
         stats["pronoun_start_ratio"] = round(pro / len(narr), 2)
         if pro / len(narr) > 0.2:
